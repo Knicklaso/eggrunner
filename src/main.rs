@@ -23,6 +23,25 @@ impl Map {
     }
 }
 
+fn try_move_player(delta_x: i32, delta_y: i32, map: &Map, hero_pos: &mut Position) {
+    if delta_x == 0 && delta_y == 0 {
+        return;
+    }
+
+    let target_x = hero_pos.x + delta_x;
+    let target_y = hero_pos.y + delta_y;
+
+    if target_x < 0 || target_x >= map.width || target_y < 0 || target_y >= map.height {
+        return;
+    }
+
+    let destination_idx = map.xy_idx(target_x, target_y);
+    if map.tiles[destination_idx] != TileType::Wall {
+        hero_pos.x = target_x;
+        hero_pos.y = target_y;
+    }
+}
+
 fn new_map() -> Map {
     let mut map = Map {
         tiles: vec![TileType::Floor; (MAP_WIDTH * MAP_HEIGHT) as usize],
@@ -79,11 +98,8 @@ impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
 
-        let (map_width, map_height) = {
-            let map = self.ecs.fetch::<Map>();
-            draw_map(&map, ctx);
-            (map.width, map.height)
-        };
+        let map = self.ecs.fetch::<Map>();
+        draw_map(&map, ctx);
 
         let mut positions = self.ecs.write_storage::<Position>();
 
@@ -96,11 +112,10 @@ impl GameState for State {
             let (mouse_x, mouse_y) = ctx.mouse_pos();
 
             if let Some(hero_pos) = positions.get_mut(self.hero) {
-                let dx = mouse_x - hero_pos.x;
-                let dy = mouse_y - hero_pos.y;
+                let dx = (mouse_x - hero_pos.x).signum();
+                let dy = (mouse_y - hero_pos.y).signum();
 
-                hero_pos.x = (hero_pos.x + dx.signum()).clamp(0, map_width - 1);
-                hero_pos.y = (hero_pos.y + dy.signum()).clamp(0, map_height - 1);
+                try_move_player(dx, dy, &map, hero_pos);
             }
         }
 
