@@ -28,7 +28,12 @@ impl GameState for State {
 
         let mut positions = self.ecs.write_storage::<Position>();
 
-        if ctx.left_click {
+        let mouse_primary_only = {
+            let input = INPUT.lock();
+            input.is_mouse_button_pressed(0) && !input.is_mouse_button_pressed(1)
+        };
+
+        if mouse_primary_only {
             let (mouse_x, mouse_y) = ctx.mouse_pos();
 
             if let Some(hero_pos) = positions.get_mut(self.hero) {
