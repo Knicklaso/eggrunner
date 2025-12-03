@@ -88,6 +88,7 @@ fn main() -> BError {
     let context = BTermBuilder::simple80x50()
         .with_title("Egg Runner")
         .with_fps_cap(30.0)
+        .with_advanced_input(true)
         .build()?;
 
     let gs = State { ecs: world, hero };
