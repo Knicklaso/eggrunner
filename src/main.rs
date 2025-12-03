@@ -24,7 +24,13 @@ struct State {
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
-        ctx.print(1, 1, "Hello from Bracket!");
+
+        let positions = self.ecs.read_storage::<Position>();
+        let renderables = self.ecs.read_storage::<Renderable>();
+
+        for (pos, render) in (&positions, &renderables).join() {
+            ctx.set(pos.x, pos.y, render.fg, render.bg, render.glyph);
+        }
     }
 }
 
@@ -32,6 +38,31 @@ fn main() -> BError {
     let mut world = World::new();
     world.register::<Position>();
     world.register::<Renderable>();
+
+    world
+        .create_entity()
+        .with(Position { x: 40, y: 25 })
+        .with(Renderable {
+            glyph: to_cp437('@'),
+            fg: RGB::named(YELLOW),
+            bg: RGB::named(BLACK),
+        })
+        .build();
+
+    for i in 0..5 {
+        world
+            .create_entity()
+            .with(Position {
+                x: 10 + (i * 8),
+                y: 40,
+            })
+            .with(Renderable {
+                glyph: to_cp437('#'),
+                fg: RGB::named(RED),
+                bg: RGB::named(BLACK),
+            })
+            .build();
+    }
 
     let context = BTermBuilder::simple80x50()
         .with_title("Egg Runner")
