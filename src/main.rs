@@ -2,6 +2,21 @@ use bracket_lib::prelude::*;
 use specs::prelude::*;
 use specs_derive::Component;
 
+#[derive(Component, Debug, Clone, Copy)]
+#[storage(VecStorage)]
+struct Position {
+    x: i32,
+    y: i32,
+}
+
+#[derive(Component, Debug, Clone, Copy)]
+#[storage(VecStorage)]
+struct Renderable {
+    glyph: FontCharType,
+    fg: RGB,
+    bg: RGB,
+}
+
 struct State;
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
