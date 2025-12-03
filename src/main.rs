@@ -30,7 +30,9 @@ impl GameState for State {
 
         let mouse_primary_only = {
             let input = INPUT.lock();
-            input.is_mouse_button_pressed(0) && !input.is_mouse_button_pressed(1)
+            input.is_mouse_button_pressed(MouseButton::Left as usize)
+                && !input.is_mouse_button_pressed(MouseButton::Right as usize)
+                && !input.is_mouse_button_pressed(MouseButton::Middle as usize)
         };
 
         if mouse_primary_only {
