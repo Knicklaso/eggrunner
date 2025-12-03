@@ -105,7 +105,7 @@ impl GameState for State {
 
         let mouse_primary = {
             let input = INPUT.lock();
-            input.is_mouse_button_pressed(MouseButton::Left as usize)
+            input.is_mouse_button_pressed(0)
         };
 
         if mouse_primary {
