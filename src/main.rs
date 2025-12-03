@@ -17,7 +17,10 @@ struct Renderable {
     bg: RGB,
 }
 
-struct State;
+struct State {
+    ecs: World,
+}
+
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
@@ -26,10 +29,16 @@ impl GameState for State {
 }
 
 fn main() -> BError {
+    let mut world = World::new();
+    world.register::<Position>();
+    world.register::<Renderable>();
+
     let context = BTermBuilder::simple80x50()
         .with_title("Egg Runner")
         .with_fps_cap(30.0)
         .build()?;
 
-    main_loop(context, State)
+    let gs = State { ecs: world };
+
+    main_loop(context, gs)
 }
