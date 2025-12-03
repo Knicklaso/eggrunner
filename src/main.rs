@@ -1,4 +1,6 @@
 use bracket_lib::prelude::*;
+use specs::prelude::*;
+use specs_derive::Component;
 
 struct State;
 impl GameState for State {

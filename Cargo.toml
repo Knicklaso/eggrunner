@@ -6,3 +6,5 @@ edition = "2021"
 [dependencies]
 bracket-lib = "=0.8.1"
 bracket-terminal = "=0.8.1"
+specs = "0.19.0"
+specs-derive = "0.4.1"
